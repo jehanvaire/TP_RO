@@ -22,6 +22,7 @@ def calculDistance(ville1, ville2):
 
 def tourAleatoire(listeVA):
     random.shuffle(listeVA)
+    return listeVA
 
 
 def afficheTour(listeVT):

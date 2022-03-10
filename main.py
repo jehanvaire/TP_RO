@@ -190,8 +190,8 @@ if __name__ == "__main__":
 
 
     listeVillesIP = insertion_proche(listeVillesCopie)
-    for v in listeVillesIP:
-        print(str(v))
+    # for v in listeVillesIP:
+    #     print(str(v))
 
     listeVillesCopie = listeVilles.copy()
 
@@ -209,40 +209,45 @@ if __name__ == "__main__":
     root.mainloop()
 
 
-    # distanceTotaleOrdre = cout(listeVilles)
-    # print(f"Distance totale parcourue ordre croissant: {distanceTotaleOrdre} km")
-    # print(f"Chemin utilise dans l'ordre : {afficheTour(listeVilles)}\n\n")
+    distanceTotaleOrdre = cout(listeVilles)
+    print(f"Distance totale parcourue ordre croissant: {distanceTotaleOrdre} km")
+    print(f"Chemin utilise dans l'ordre : {afficheTour(listeVilles)}\n\n")
 
-    # print(f"Ville la plus proche de {listeVilles[0].getNom()} : {plus_proche(listeVilles, listeVilles[0])[1].getNom()}")
+    print(f"Ville la plus proche de {listeVilles[0].getNom()} : {plus_proche(listeVilles, listeVilles[0])[1].getNom()}")
+
+    listeVillesCopie = listeVilles.copy()
 
 
-    # tourAleatoire(listeVilles)
-    # distanceTotale = cout(listeVilles)
-    # print(f"Distance totale parcourue aleatoire: {distanceTotale} km")
-    # print(f"Chemin utilise aleatoire : {afficheTour(listeVilles)}\n\n")
+    listeVillesCopie = tourAleatoire(listeVillesCopie)
+    distanceTotale = cout(listeVillesCopie)
+    print(f"Distance totale parcourue aleatoire: {distanceTotale} km")
+    print(f"Chemin utilise aleatoire : {afficheTour(listeVillesCopie)}\n\n")
 
-    # tournee_glouton = plus_proche_voisin(listeVillesCopie, listeVilles[0])
-    # print(f"Chemin utilise dans glouton : {afficheTour(tournee_glouton)}")
-    # print(f"Distance totale parcourue glouton : {cout(tournee_glouton)} km\n\n")
+    listeVillesCopie = listeVilles.copy()
 
-    # #On rempli listeVillesCopie vu que celle-ci se vide dans la méthode plus_proche_voisin
-    # listeVillesCopie = listeVilles.copy()
 
-    # tournee_glouton_ameliore = plus_proche_voisin_ameliore(listeVillesCopie)
-    # print(f"Chemin utilise dans glouton ameliore : {afficheTour(tournee_glouton_ameliore)}")
-    # print(f"Distance totale parcourue glouton ameliore: {cout(tournee_glouton_ameliore)} km\n\n")
+    tournee_glouton = plus_proche_voisin(listeVillesCopie, listeVilles[0])
+    print(f"Chemin utilise dans glouton : {afficheTour(tournee_glouton)}")
+    print(f"Distance totale parcourue glouton : {cout(tournee_glouton)} km\n\n")
+
+    #On rempli listeVillesCopie vu que celle-ci se vide dans la méthode plus_proche_voisin
+    listeVillesCopie = listeVilles.copy()
+
+    tournee_glouton_ameliore = plus_proche_voisin_ameliore(listeVillesCopie)
+    print(f"Chemin utilise dans glouton ameliore : {afficheTour(tournee_glouton_ameliore)}")
+    print(f"Distance totale parcourue glouton ameliore: {cout(tournee_glouton_ameliore)} km\n\n")
 
     
-    # listeVillesCopie = listeVilles.copy()
+    listeVillesCopie = listeVilles.copy()
 
 
-    # listeVillesIP = insertion_proche(listeVillesCopie)
-    # print(f"Chemin utilise dans insertion proche : {afficheTour(listeVillesIP)}")
-    # print(f"Distance totale parcourue insertion proche : {cout(listeVillesIP)} km\n\n")
+    listeVillesIP = insertion_proche(listeVillesCopie)
+    print(f"Chemin utilise dans insertion proche : {afficheTour(listeVillesIP)}")
+    print(f"Distance totale parcourue insertion proche : {cout(listeVillesIP)} km\n\n")
 
-    # listeVillesCopie = listeVilles.copy()
+    listeVillesCopie = listeVilles.copy()
 
 
-    # listeVillesIL = insertion_loin(listeVillesCopie)
-    # print(f"Chemin utilise dans insertion loin : {afficheTour(listeVillesIL)}")
-    # print(f"Distance totale parcourue insertion loin : {cout(listeVillesIL)} km\n\n")
+    listeVillesIL = insertion_loin(listeVillesCopie)
+    print(f"Chemin utilise dans insertion loin : {afficheTour(listeVillesIL)}")
+    print(f"Distance totale parcourue insertion loin : {cout(listeVillesIL)} km\n\n")
