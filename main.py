@@ -47,25 +47,34 @@ def insertion_proche(listeV):
     print("Distance 1 : " + str(cout(listeVillesIP)))
     
     
-    distance_min = 9999999999
-    index_min = 999999999
-    ville = None
     
-    for v in listeV:
-        for i in range(0, len(listeV)-1):
-            distance_ajoutee = calculDistance(listeV[i], v) + calculDistance(v, listeV[i+1]) - calculDistance(listeV[i], listeV[i-1])
-            print(distance_ajoutee)
-            print(distance_min)
-            if(distance_ajoutee < distance_min):
+
+    for i in range(0, 1):
+        distance_min = 9999999999
+        index_min = 999999999
+        ville = None
+
+
+        while(len(listeV) > 0):
+            for i in range(0, len(listeVillesIP)-1):
                 
-                distance_min = distance_ajoutee
-                index_min = i
-                ville = v
-                
+                distance_ajoutee = calculDistance(listeVillesIP[i], v) + calculDistance(v, listeVillesIP[i+1]) - calculDistance(listeVillesIP[i], listeVillesIP[i+1])
+                if(distance_ajoutee < distance_min and distance_ajoutee > 0):
+                    # print(f'Distance ajoutee {distance_ajoutee}, distance precedente {distance_min}')
+                    
+                    distance_min = distance_ajoutee
+                    index_min = i
+                    ville = v
+            if(v in listeV):
+                listeV.remove(v)
+
+        listeVillesIP.insert(index_min, ville)
+        print(ville)
+
+        print(len(listeV))
+
+
             
-    listeVillesIP.insert(index, ville)
-    for v in listeVillesIP:
-        print(v.getNum())
     
     
     
