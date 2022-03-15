@@ -1,9 +1,30 @@
 from ville import Ville
 from utilitaires import *
-#from cyberbrain import trace
 from tkinter import *
 from affichage import *
-import time
+
+
+def affiche_tournee(listeVAAFF):
+    canv = Canvas(root, width=largeur, height=hauteur)
+
+    canv.create_image(0, 0, anchor=NW, image=photo)
+
+    canv.pack(expand=YES, fill="both")
+    for i in range(0, len(listeVAAFF)-1):
+        x, y = fromLatLong2pixels(listeVAAFF[i], listeVAAFF, largeur, hauteur)
+        xSuiv, ySuiv = fromLatLong2pixels(listeVAAFF[i+1], listeVAAFF, largeur, hauteur)
+        y = hauteur - y
+        ySuiv = hauteur - ySuiv
+
+        canv.create_line(x, y, xSuiv, ySuiv)
+        canv.create_text(x, y, text=str(listeVAAFF[i].getNum()))
+        canv.pack()
+
+        if (i == len(listeVAAFF)-1):
+            xSuiv, ySuiv = fromLatLong2pixels(listeVAAFF[0], listeVAAFF, largeur, hauteur)
+            ySuiv = hauteur - ySuiv
+            canv.create_line(x, y, xSuiv, ySuiv)
+
 
 
 
@@ -117,32 +138,24 @@ def insertion_loin(listeV):
 
 
 
-
-def affiche_tournee(listeVAAFF, listeComplete):
-    canv = Canvas(root, width=largeur, height=hauteur)
-
-    canv.delete("all")
-    canv.create_image(0, 0, anchor=NW, image=photo)
-
-    canv.pack(expand=YES, fill="both")
-    for i in range(0, len(listeVAAFF)-1):
-        x, y = fromLatLong2pixels(listeVAAFF[i], listeComplete, largeur, hauteur)
-        xSuiv, ySuiv = fromLatLong2pixels(listeVAAFF[i+1], listeComplete, largeur, hauteur)
-        y = hauteur - y
-        ySuiv = hauteur - ySuiv
-
-        canv.create_line(x, y, xSuiv, ySuiv)
-        canv.create_text(x, y, text=str(listeVAAFF[i].getNum()))
-        canv.pack()
-
-        if (i == len(listeVAAFF)-1):
-            xSuiv, ySuiv = fromLatLong2pixels(listeVAAFF[0], listeComplete, largeur, hauteur)
-            ySuiv = hauteur - ySuiv
-            canv.create_line(x, y, xSuiv, ySuiv)
+def recherche_locale(listeVL):
+    t_courante = listeVL
+    fini = False
+    while not fini:
+        fini = True
+        t_voisin = []
+        if(cout(t_voisin) < cout(t_courante)):
+            t_courante = t_voisin
+            fini = False
+    return t_courante
 
 
 
-
+def exploration_successeurs_premier_dabord(t_courante):
+    for i in range(0, len(t_courante)):
+        if(calculDistance(t_courante[i-1], t_courante[i]) + calculDistance(t_courante[i+1], t_courante[i+2]) > calculDistance(t_courante[i-1], t_courante[i+1]) + calculDistance(t_courante[i], t_courante[i+2])):
+            print("ok")
+            
 
 if __name__ == "__main__":
 
@@ -174,19 +187,7 @@ if __name__ == "__main__":
     
     #============================================================#
 
-
-    listeVillesIP = insertion_proche(listeVillesCopie)
-
-    for i in range(0, len(listeVillesIP)-1):
-        petiteListe = listeVillesIP[0:i]
-        print(len(petiteListe))
-
-        affiche_tournee(petiteListe, listeVillesIP)
-        time.sleep(0.1)
-
-        root.mainloop()
-
-
+    
     
     # listeVillesCopie = listeVilles.copy()
     # distanceTotaleOrdre = cout(listeVillesCopie)
@@ -203,6 +204,12 @@ if __name__ == "__main__":
     # print(f"Distance totale parcourue aleatoire: {distanceTotale} km")
     # print(f"Chemin utilise aleatoire : {afficheTour(listeVillesCopie)}\n\n")
 
+
+
+
+    # METHODES GLOUTONNES
+
+
     # listeVillesCopie = listeVilles.copy()
 
     # print("Ville 1 " + listeVillesCopie[0].getNom())
@@ -210,25 +217,29 @@ if __name__ == "__main__":
     # print(f"Chemin utilise dans glouton : {afficheTour(tournee_glouton)}")
     # print(f"Distance totale parcourue glouton : {cout(tournee_glouton)} km\n\n")
 
-    #On rempli listeVillesCopie vu que celle-ci se vide dans la méthode plus_proche_voisin
+
     # listeVillesCopie = listeVilles.copy()
 
     # tournee_glouton_ameliore = plus_proche_voisin_ameliore(listeVillesCopie)
     # print(f"Chemin utilise dans glouton ameliore : {afficheTour(tournee_glouton_ameliore)}")
     # print(f"Distance totale parcourue glouton ameliore: {cout(tournee_glouton_ameliore)} km\n\n")
 
-    
+
     # listeVillesCopie = listeVilles.copy()
     
-
-
     # listeVillesIP1 = insertion_proche(listeVillesCopie)
     # print(f"Chemin utilise dans insertion proche : {afficheTour(listeVillesIP1)}")
     # print(f"Distance totale parcourue insertion proche : {cout(listeVillesIP1)} km\n\n")
 
-    # listeVillesCopie = listeVilles.copy()
 
+    # listeVillesCopie = listeVilles.copy()
 
     # listeVillesIL = insertion_loin(listeVillesCopie)
     # print(f"Chemin utilise dans insertion loin : {afficheTour(listeVillesIL)}")
     # print(f"Distance totale parcourue insertion loin : {cout(listeVillesIL)} km\n\n")
+
+    listeVillesIP = insertion_proche(listeVillesCopie)
+
+    affiche_tournee(listeVillesIP, listeVillesIP)
+
+    root.mainloop()
