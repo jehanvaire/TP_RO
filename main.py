@@ -40,158 +40,81 @@ def insertion_proche(listeV):
     if(listeVillesIP[0] in listeV and listeVillesIP[1] in listeV):
         listeV.remove(listeVillesIP[0])
         listeV.remove(listeVillesIP[1])
-        
-    for v in listeVillesIP:
-        print(v.getNum(), end=' ')
-        
-    print("Distance 1 : " + str(cout(listeVillesIP)))
     
-    
-    
-
-    for i in range(0, 1):
+    # chaque itération permet de trouver la ville qui étend le moins la tournée
+    for i in range(0, len(listeV)):
         distance_min = 9999999999
-        index_min = 999999999
+        index_min = -1
         ville = None
+        # on va parcourir la liste de villes pour trouver la ville qui étend le moins la tournée
+        for v in listeV:
 
-
-        while(len(listeV) > 0):
-            for i in range(0, len(listeVillesIP)-1):
+            # on va chercher l'index auquel la ville ajoutera le moins de distance
+            for i in range(0, len(listeVillesIP)):
+                # on vérifie si la ville peut prendre la dernière place de la tournée
+                if(i == len(listeVillesIP)-1):
+                    distance_ajoutee = calculDistance(listeVillesIP[i], v) + calculDistance(v, listeVillesIP[0]) - calculDistance(listeVillesIP[i], listeVillesIP[0])
+                # sinon, pour tous les autres éléments de la liste, on calcule la distance ajoutée
+                else:
+                    distance_ajoutee = calculDistance(listeVillesIP[i], v) + calculDistance(v, listeVillesIP[i+1]) - calculDistance(listeVillesIP[i], listeVillesIP[i+1])
                 
-                distance_ajoutee = calculDistance(listeVillesIP[i], v) + calculDistance(v, listeVillesIP[i+1]) - calculDistance(listeVillesIP[i], listeVillesIP[i+1])
-                if(distance_ajoutee < distance_min and distance_ajoutee > 0):
-                    # print(f'Distance ajoutee {distance_ajoutee}, distance precedente {distance_min}')
-                    
+                # si la nouvelle distance est mieux, alors on la prends.
+                if(distance_ajoutee < distance_min):
                     distance_min = distance_ajoutee
                     index_min = i
                     ville = v
-            if(v in listeV):
-                listeV.remove(v)
-
-        listeVillesIP.insert(index_min, ville)
-        print(ville)
-
-        print(len(listeV))
-
-
-            
-    
-    
-    
-    
-
-
-    # for i in range(0, 1): #len(listeV)
-
-    #     villeChoisie = listeV[0] #ville choisie au hasard
-    #     index = -1
-    #     # distancePrecedente = 99999999.99
-
-    #     # on parcour toute la liste de ville pour trouver la prochaine ville 
-    #     # dont le cout sera le plus faible
-    #     for ville in listeV:
-            
-    #         # on copie la liste de villes pour éviter les problèmes
-    #         # on calcule le cout de cette tournée
-    #         # puis on supprime la ville de la liste de test
-    #         distanceIndexOptimal = 99999999
-    #         distancePrecedente = 99999999.99
-            
-
-
-
-    #         # on trouve l'index auquel la distance sera la plus petite
-    #         for pos in range(1, len(listeVillesIP)):
-    #             listeVillesIP.insert(pos, ville)
-    #             distanceTournee = cout(listeVillesIP)
-    #             listeVillesIP.remove(ville)
-
-    #             if(distanceTournee < distanceIndexOptimal):
-    #                 distanceIndexOptimal = distanceTournee
-    #                 index = pos
-                
-
-    #         # on insère la ville au meilleur index possible
-    #         listeVillesIP.insert(index, ville)
-    #         # puis on recalcule le cout de la tournée
-    #         distanceTournee = cout(listeVillesIP)
-    #         # print(f'Distance tournee {distanceTournee}, vile : {ville.getNum()}')
-    #         # print(f'Distance : {distanceTournee}, ville : {ville}')
-    #         listeVillesIP.remove(ville)
-
-
-    #         # si le cout de cette tournée est inférieur au cout de la tournée précédente
-    #         # on considère que cette tournée est (pour le moment) la meilleure
-    #         if(distanceTournee < distancePrecedente):
-    #             print(f"inférieur {distanceTournee}, precedente = {distancePrecedente}")
-    #             distancePrecedente = distanceTournee
-                
-    #             if(villeChoisie in listeVillesIP):
-    #                 listeVillesIP.remove(villeChoisie)
-    #             villeChoisie = ville
-    #             listeVillesIP.insert(index, villeChoisie)
-    #     for v in listeVillesIP:
-    #         print(v.getNum(), end=' ')
-    #     # print()
-    #     print(cout(listeVillesIP))
-
-    #     listeV.remove(ville)
+        
+        # une fois que la ville et l'index minimum sont trouvés, on insère dans la nouvelle tournée
+        listeVillesIP.insert(index_min+1, ville)
+        # on enlève la ville de a liste de villes pour éviter qu'elle apparaisse plusieurs fois
+        listeV.remove(ville)
 
     return listeVillesIP
 
 
 
 def insertion_loin(listeV):
-    listeVillesIP = get_villes_plus_eloignees(listeV)
-
-    if(listeVillesIP[0] in listeV and listeVillesIP[1] in listeV):
-        listeV.remove(listeVillesIP[0])
-        listeV.remove(listeVillesIP[1])
-
+    # on cherche les deux villes les plus éloignées l'une de l'autre
+    listeVillesIL = get_villes_plus_eloignees(listeV)
     
-    for i in range(0, len(listeV)):
-        villeChoisie = listeV[0] #ville choisie au hasard
-        index = -1
+    # et on les supprime de la liste de villes
+    if(listeVillesIL[0] in listeV and listeVillesIL[1] in listeV):
+        listeV.remove(listeVillesIL[0])
+        listeV.remove(listeVillesIL[1])
+        
+    for v in listeVillesIL:
+        print(v.getNum(), end=' ')
+        
+    for i in range(0, 2):
+        distance_max = -1
+        index_min = -1
+        distance_precedente = 9999999999999
+        ville = None
 
-        # on parcour toute la liste de ville pour trouver la prochaine ville 
-        # dont le cout sera le plus faible
+        for v in listeV:
 
-        for ville in listeV:
-            # on copie la liste de villes pour éviter les problèmes
-            # on calcule le cout de cette tournée
-            # puis on supprime la ville de la liste de test
-            distanceIndexOptimal = -1
-            distancePrecedente = -1
-            
-            # on trouve l'index auquel la distance sera la plus petite
-            for pos in range(1, len(listeVillesIP)):
-                listeVillesIP.insert(pos, ville)
-                distanceTournee = cout(listeVillesIP)
-                listeVillesIP.remove(ville)
+            for i in range(0, len(listeVillesIL)):
 
-                if(distanceTournee > distanceIndexOptimal):
-                    distanceIndexOptimal = distanceTournee
-                    index = pos
-
-
-            # on insère la ville au meilleur index possible
-            listeVillesIP.insert(index, ville)
-            # puis on recalcule le cout de la tournée
-            distanceTournee = cout(listeVillesIP)
-            # print(f'Distance : {distanceTournee}, ville : {ville}')
-            listeVillesIP.remove(ville)
-
-            # si le cout de cette tournée est inférieur au cout de la tournée précédente
-            # on considère que cette tournée est (pour le moment) la meilleure
-            if(distanceTournee > distancePrecedente):
-                if(villeChoisie in listeVillesIP):
-                    listeVillesIP.remove(villeChoisie)
-                villeChoisie = ville
-                distancePrecedente = distanceTournee
-                listeVillesIP.insert(index, villeChoisie)
-
+                if(i == len(listeVillesIL)-1):
+                    distance_ajoutee = calculDistance(listeVillesIL[i], v) + calculDistance(v, listeVillesIL[0]) - calculDistance(listeVillesIL[i], listeVillesIL[0])
+                else:
+                    distance_ajoutee = calculDistance(listeVillesIL[i], v) + calculDistance(v, listeVillesIL[i+1]) - calculDistance(listeVillesIL[i], listeVillesIL[i+1])
+                
+                if(distance_ajoutee > distance_max and distance_ajoutee < distance_precedente):
+                    if(i == len(listeVillesIL)-1 and i > 0):
+                        distance_ajoutee = calculDistance(listeVillesIL[i], ville) + calculDistance(ville, listeVillesIL[0]) - calculDistance(listeVillesIL[i], listeVillesIL[0])
+                    elif(i > 0):
+                        distance_precedente = calculDistance(listeVillesIL[i], ville) + calculDistance(ville, listeVillesIL[i+1]) - calculDistance(listeVillesIL[i], listeVillesIL[i+1])
+                    distance_max = distance_ajoutee
+                    index_min = i
+                    ville = v
+        listeVillesIL.insert(index_min+1, ville)
         listeV.remove(ville)
-    return listeVillesIP
+
+    return listeVillesIL
+
+
+
 
 def create_circle(x, y, r, canvasName): #center coordinates, radius
     x0 = x - r
@@ -227,35 +150,35 @@ if __name__ == "__main__":
     listeVillesCopie = listeVilles.copy()
 
 
-    # root = Tk(className='TP recherche opérationnelle')
-    # root.geometry("686x754")
+    root = Tk(className='TP recherche opérationnelle')
+    root.geometry("686x754")
 
-    # photo = PhotoImage(file="carte.png")
-    # canv = Canvas(root, width=largeur, height=hauteur)
-    # canv.create_image(0, 0, anchor=NW, image=photo)
+    photo = PhotoImage(file="carte.png")
+    canv = Canvas(root, width=largeur, height=hauteur)
+    canv.create_image(0, 0, anchor=NW, image=photo)
 
-    # canv.pack(expand=YES, fill="both")
+    canv.pack(expand=YES, fill="both")
     #============================================================#
 
 
-    # listeVillesIP = insertion_proche(listeVillesCopie)
-    # # for v in listeVillesIP:
-    # #     print(str(v))
+    listeVillesIP = insertion_proche(listeVillesCopie)
+    # for v in listeVillesIP:
+    #     print(str(v))
 
     # listeVillesCopie = listeVilles.copy()
 
-    # for pos in range(0, len(listeVillesCopie)):
-    #     x, y = fromLatLong2pixels(listeVillesCopie[pos], listeVillesCopie, largeur, hauteur)
-    #     y = hauteur - y
-    #     create_circle(x, y, 5, canv)
-    #     Label(root, text=listeVillesCopie[pos].getNum(), fg="black").place(x=x, y=y)
-    #     if pos > 0:
-    #         xPrecedent, yPrecedent = fromLatLong2pixels(listeVillesCopie[pos-1], listeVillesCopie, largeur, hauteur)
-    #         canv.create_line(xPrecedent, xPrecedent, x, y)
+    for pos in range(0, len(listeVillesIP)):
+        x, y = fromLatLong2pixels(listeVillesIP[pos], listeVillesIP, largeur, hauteur)
+        y = hauteur - y
+        # create_circle(x, y, 5, canv)
+        Label(root, text=listeVillesIP[pos].getNum()).place(x=x, y=y)
+        if pos > 0:
+            xPrecedent, yPrecedent = fromLatLong2pixels(listeVillesIP[pos-1], listeVillesIP, largeur, hauteur)
+            canv.create_line(xPrecedent, xPrecedent, x, y)
 
 
 
-    # root.mainloop()
+    root.mainloop()
     
     
     # listeVillesCopie = listeVilles.copy()
@@ -288,17 +211,17 @@ if __name__ == "__main__":
     # print(f"Distance totale parcourue glouton ameliore: {cout(tournee_glouton_ameliore)} km\n\n")
 
     
-    listeVillesCopie = listeVilles.copy()
+    # listeVillesCopie = listeVilles.copy()
     
 
 
-    listeVillesIP1 = insertion_proche(listeVillesCopie)
-    print(f"Chemin utilise dans insertion proche : {afficheTour(listeVillesIP1)}")
-    print(f"Distance totale parcourue insertion proche : {cout(listeVillesIP1)} km\n\n")
+    # listeVillesIP1 = insertion_proche(listeVillesCopie)
+    # print(f"Chemin utilise dans insertion proche : {afficheTour(listeVillesIP1)}")
+    # print(f"Distance totale parcourue insertion proche : {cout(listeVillesIP1)} km\n\n")
 
-    # listeVillesCopie = listeVilles.copy()
+    listeVillesCopie = listeVilles.copy()
 
 
-    # listeVillesIL = insertion_loin(listeVillesCopie)
-    # print(f"Chemin utilise dans insertion loin : {afficheTour(listeVillesIL)}")
-    # print(f"Distance totale parcourue insertion loin : {cout(listeVillesIL)} km\n\n")
+    listeVillesIL = insertion_loin(listeVillesCopie)
+    print(f"Chemin utilise dans insertion loin : {afficheTour(listeVillesIL)}")
+    print(f"Distance totale parcourue insertion loin : {cout(listeVillesIL)} km\n\n")
