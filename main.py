@@ -3,6 +3,7 @@ from utilitaires import *
 #from cyberbrain import trace
 from tkinter import *
 from affichage import *
+import time
 
 
 
@@ -33,6 +34,7 @@ def plus_proche_voisin_ameliore(listeVilles):
 
 
 def insertion_proche(listeV):
+
     # on cherche les deux villes les plus éloignées l'une de l'autre
     listeVillesIP = get_villes_plus_eloignees(listeV)
     
@@ -116,13 +118,27 @@ def insertion_loin(listeV):
 
 
 
-def create_circle(x, y, r, canvasName): #center coordinates, radius
-    x0 = x - r
-    y0 = y - r
-    x1 = x + r
-    y1 = y + r
-    return canvasName.create_oval(x0, y0, x1, y1, fill="#FF0000")
+def affiche_tournee(listeVAAFF, listeComplete):
+    canv = Canvas(root, width=largeur, height=hauteur)
 
+    canv.delete("all")
+    canv.create_image(0, 0, anchor=NW, image=photo)
+
+    canv.pack(expand=YES, fill="both")
+    for i in range(0, len(listeVAAFF)-1):
+        x, y = fromLatLong2pixels(listeVAAFF[i], listeComplete, largeur, hauteur)
+        xSuiv, ySuiv = fromLatLong2pixels(listeVAAFF[i+1], listeComplete, largeur, hauteur)
+        y = hauteur - y
+        ySuiv = hauteur - ySuiv
+
+        canv.create_line(x, y, xSuiv, ySuiv)
+        canv.create_text(x, y, text=str(listeVAAFF[i].getNum()))
+        canv.pack()
+
+        if (i == len(listeVAAFF)-1):
+            xSuiv, ySuiv = fromLatLong2pixels(listeVAAFF[0], listeComplete, largeur, hauteur)
+            ySuiv = hauteur - ySuiv
+            canv.create_line(x, y, xSuiv, ySuiv)
 
 
 
@@ -142,6 +158,7 @@ if __name__ == "__main__":
     largeur = 686
 
 
+
     for x in lines:
         ville = x.split(" ")
         v = Ville(ville[0], ville[1], ville[2], ville[3])
@@ -154,32 +171,22 @@ if __name__ == "__main__":
     root.geometry("686x754")
 
     photo = PhotoImage(file="carte.png")
-    canv = Canvas(root, width=largeur, height=hauteur)
-    canv.create_image(0, 0, anchor=NW, image=photo)
-
-    canv.pack(expand=YES, fill="both")
+    
     #============================================================#
 
 
     listeVillesIP = insertion_proche(listeVillesCopie)
-    # for v in listeVillesIP:
-    #     print(str(v))
 
-    # listeVillesCopie = listeVilles.copy()
+    for i in range(0, len(listeVillesIP)-1):
+        petiteListe = listeVillesIP[0:i]
+        print(len(petiteListe))
 
-    for pos in range(0, len(listeVillesIP)):
-        x, y = fromLatLong2pixels(listeVillesIP[pos], listeVillesIP, largeur, hauteur)
-        y = hauteur - y
-        # create_circle(x, y, 5, canv)
-        Label(root, text=listeVillesIP[pos].getNum()).place(x=x, y=y)
-        if pos > 0:
-            xPrecedent, yPrecedent = fromLatLong2pixels(listeVillesIP[pos-1], listeVillesIP, largeur, hauteur)
-            canv.create_line(xPrecedent, xPrecedent, x, y)
+        affiche_tournee(petiteListe, listeVillesIP)
+        time.sleep(0.1)
+
+        root.mainloop()
 
 
-
-    root.mainloop()
-    
     
     # listeVillesCopie = listeVilles.copy()
     # distanceTotaleOrdre = cout(listeVillesCopie)
@@ -219,9 +226,9 @@ if __name__ == "__main__":
     # print(f"Chemin utilise dans insertion proche : {afficheTour(listeVillesIP1)}")
     # print(f"Distance totale parcourue insertion proche : {cout(listeVillesIP1)} km\n\n")
 
-    listeVillesCopie = listeVilles.copy()
+    # listeVillesCopie = listeVilles.copy()
 
 
-    listeVillesIL = insertion_loin(listeVillesCopie)
-    print(f"Chemin utilise dans insertion loin : {afficheTour(listeVillesIL)}")
-    print(f"Distance totale parcourue insertion loin : {cout(listeVillesIL)} km\n\n")
+    # listeVillesIL = insertion_loin(listeVillesCopie)
+    # print(f"Chemin utilise dans insertion loin : {afficheTour(listeVillesIL)}")
+    # print(f"Distance totale parcourue insertion loin : {cout(listeVillesIL)} km\n\n")
