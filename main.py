@@ -2,6 +2,7 @@ from ville import Ville
 from utilitaires import *
 from tkinter import *
 from affichage import *
+import time
 
 
 def affiche_tournee(listeVAAFF):
@@ -17,7 +18,7 @@ def affiche_tournee(listeVAAFF):
         y = hauteur - y
         ySuiv = hauteur - ySuiv
 
-        canv.create_line(x, y, xSuiv, ySuiv)
+        canv.create_line(x, y, xSuiv, ySuiv, fill='black')
         canv.create_text(x, y, text=str(listeVAAFF[i].getNum()), fill="blue")
         canv.pack()
 
@@ -202,9 +203,16 @@ def echange_sommets_quelconques(t_courante):
 
 
 def echange_2_opt(t_courante):
+
+
+
+
+
     fini = False
     while not fini:
         fini = True
+
+
         for i in range(0, len(t_courante)):
             for j in range(i + 2, len(t_courante)):
                 cout_temp = cout(t_courante)
@@ -221,12 +229,14 @@ def ma_super_recherche_locale(tournee):
     meilleur = tournee
     while continuer:
         continuer = False
-        tournee = recherche_locale_premier(tournee)
         tournee = echange_2_opt(tournee)
+
+        tournee = recherche_locale_meilleur(tournee)
         if cout(meilleur) < cout(tournee):
             meilleur = tournee
             continuer = True
     return meilleur
+
 
 
 def algo_genetique(listeV, x, nbMax, n):
@@ -235,8 +245,68 @@ def algo_genetique(listeV, x, nbMax, n):
     for i in range(0, x):
         liste_tournees_alea.append(tourAleatoire(listeV))
 
+
+    listeMeilleurs = []
+
     while generation < nbMax:
+
+        # on choisis n parents parmis la liste de tournees aleatoires
         n_parents = random.choices(liste_tournees_alea, k=n)
+
+        liste_enfants = []
+
+        # croisement des parents
+        for i in range(0, len(n_parents), 2):
+            parent1 = n_parents[i]
+            parent2 = n_parents[i+1]
+            point_de_croisement = random.randrange(50)
+            pos_alea = random.randrange(len(n_parents)-point_de_croisement)
+            e1 = parent1[0:point_de_croisement]
+            e2 = parent2[0:point_de_croisement]
+
+
+            for e in parent2[point_de_croisement:len(parent2)-1]:
+                if(e not in e1):
+                    e1.append(e)
+
+            for e in parent1[point_de_croisement:len(parent1)-1]:
+                if(e not in e1):
+                    e1.append(e)
+
+            for e in parent1[point_de_croisement:len(parent1)-1]:
+                if(e not in e2):
+                    e2.append(e)
+                    
+            for e in parent2[point_de_croisement:len(parent2)-1]:
+                if(e not in e2):
+                    e1.append(e)
+
+            liste_enfants.append(e1)
+            liste_enfants.append(e2)
+        
+
+        for i in range(0, 10):
+            liste_enfants[i] = echange_2_opt(liste_enfants[i])
+            print(i)
+
+
+        n_parents = random.choices(n_parents, k=n) + random.choices(liste_enfants, k=n)
+        
+        t_min = 99999999999.0
+        tournee_min = []
+        for t in n_parents:
+
+            if(cout(t) < t_min):
+                t_min = cout(t)
+                tournee_min = t
+
+        print(
+            f"meilleure tournee : {afficheTour(tournee_min)}")
+        print(
+            f"meilleur cout: {cout(tournee_min)} km\n\n")
+
+
+
         generation += 1
 
 
@@ -245,8 +315,7 @@ if __name__ == "__main__":
     # CHARGEMENT DES DONNEES
     # ============================================================#
     f = open("instances/top80.txt", "r")
-    # f = open("instances/moinsDe100.txt", "r")
-    # f = open("instances/ListeComplete.txt", "r")
+
 
     lines = f.readlines()
     listeVilles = []
@@ -273,9 +342,9 @@ if __name__ == "__main__":
     # listeVillesCopie = listeVilles.copy()
     # distanceTotaleOrdre = cout(listeVillesCopie)
     # print(f"Distance totale parcourue ordre croissant: {distanceTotaleOrdre} km")
-    # print(f"Chemin utilise dans l'ordre : {afficheTour(listeVilles)}\n\n")
+    # print(f"Chemin utilise dans l'ordre : {afficheTour(listeVillesCopie)}\n\n")
 
-    # print(f"Ville la plus proche de {listeVilles[0].getNom()} : {plus_proche(listeVilles, listeVilles[0])[1].getNom()}")
+    # print(f"Ville la plus proche de {listeVillesCopie[0].getNom()} : {plus_proche(listeVillesCopie, listeVillesCopie[0])[1].getNom()}")
 
     # listeVillesCopie = listeVilles.copy()
 
@@ -284,21 +353,23 @@ if __name__ == "__main__":
     # print(f"Distance totale parcourue aleatoire: {cout(tourneeAlea)} km")
     # print(f"Chemin utilise aleatoire : {afficheTour(tourneeAlea)}\n\n")
 
-    # METHODES GLOUTONNES
+    # # METHODES GLOUTONNES
+    # listeVillesCopie = listeVilles.copy()
 
-    print("Ville 1 " + listeVillesCopie[0].getNom())
-    tournee_glouton = plus_proche_voisin(listeVillesCopie, listeVilles[0])
-    print(f"Chemin utilise dans glouton : {afficheTour(tournee_glouton)}")
-    print(
-        f"Distance totale parcourue glouton : {cout(tournee_glouton)} km\n\n")
 
-    listeVillesCopie = listeVilles.copy()
+    # print("Ville 1 " + listeVillesCopie[0].getNom())
+    # tournee_glouton = plus_proche_voisin(listeVillesCopie, listeVillesCopie[0])
+    # print(f"Chemin utilise dans glouton : {afficheTour(tournee_glouton)}")
+    # print(
+    #     f"Distance totale parcourue glouton : {cout(tournee_glouton)} km\n\n")
 
-    tournee_glouton_ameliore = plus_proche_voisin_ameliore(listeVillesCopie)
-    print(
-        f"Chemin utilise dans glouton ameliore : {afficheTour(tournee_glouton_ameliore)}")
-    print(
-        f"Distance totale parcourue glouton ameliore: {cout(tournee_glouton_ameliore)} km\n\n")
+    # listeVillesCopie = listeVilles.copy()
+
+    # tournee_glouton_ameliore = plus_proche_voisin_ameliore(listeVillesCopie)
+    # print(
+    #     f"Chemin utilise dans glouton ameliore : {afficheTour(tournee_glouton_ameliore)}")
+    # print(
+    #     f"Distance totale parcourue glouton ameliore: {cout(tournee_glouton_ameliore)} km\n\n")
 
     # listeVillesCopie = listeVilles.copy()
 
@@ -319,34 +390,35 @@ if __name__ == "__main__":
     # print(f"Chemin utilise dans recherche locale premier : {afficheTour(listeRechercheLocale)}")
     # print(f"Distance totale parcourue recherche locale premier: {cout(listeRechercheLocale)} km\n\n")
 
-    listeRechercheLocaleMeilleur = recherche_locale_meilleur(tournee_glouton)
-    print(
-        f"Chemin utilise dans recherche locale meilleur : {afficheTour(listeRechercheLocaleMeilleur)}")
-    print(
-        f"Distance totale parcourue recherche locale meilleur: {cout(listeRechercheLocaleMeilleur)} km\n\n")
+    # listeRechercheLocaleMeilleur = recherche_locale_meilleur(tournee_glouton)
+    # print(
+    #     f"Chemin utilise dans recherche locale meilleur : {afficheTour(listeRechercheLocaleMeilleur)}")
+    # print(
+    #     f"Distance totale parcourue recherche locale meilleur: {cout(listeRechercheLocaleMeilleur)} km\n\n")
 
-    liste_sommets_qq = echange_sommets_quelconques(tournee_glouton)
-    print(
-        f"Chemin utilise dans recherche sommets quelconques : {afficheTour(liste_sommets_qq)}")
-    print(
-        f"Distance totale parcourue recherche sommets quelconques : {cout(liste_sommets_qq)} km\n\n")
+    # liste_sommets_qq = echange_sommets_quelconques(tournee_glouton)
+    # print(
+    #     f"Chemin utilise dans recherche sommets quelconques : {afficheTour(liste_sommets_qq)}")
+    # print(
+    #     f"Distance totale parcourue recherche sommets quelconques : {cout(liste_sommets_qq)} km\n\n")
 
-    liste_echange_2_opt = echange_2_opt(tournee_glouton_ameliore)
-    print(
-        f"Chemin utilise dans recherche 2 opt : {afficheTour(liste_echange_2_opt)}")
-    print(
-        f"Distance totale parcourue recherche 2 opt : {cout(liste_echange_2_opt)} km\n\n")
+    # liste_echange_2_opt = echange_2_opt(tournee_glouton_ameliore)
+    # print(
+    #     f"Chemin utilise dans recherche 2 opt : {afficheTour(liste_echange_2_opt)}")
+    # print(
+    #     f"Distance totale parcourue recherche 2 opt : {cout(liste_echange_2_opt)} km\n\n")
 
-    super_recherche = ma_super_recherche_locale(tournee_glouton_ameliore)
-    print(
-        f"Chemin utilise dans super_recherche : {afficheTour(super_recherche)}")
-    print(
-        f"Distance totale parcourue super_recherche : {cout(super_recherche)} km\n\n")
+    # super_recherche = ma_super_recherche_locale(tournee_glouton_ameliore)
+    # print(
+    #     f"Chemin utilise dans super_recherche : {afficheTour(super_recherche)}")
+    # print(
+    #     f"Distance totale parcourue super_recherche : {cout(super_recherche)} km\n\n")
 
-    affiche_tournee(super_recherche)
+    # affiche_tournee(liste_echange_2_opt)
 
-    # listeVillesCopie = listeVilles.copy()
+    listeVillesCopie = listeVilles.copy()
 
-    # tournee_genetique = algo_genetique(listeVillesCopie, 800, 50, 400)
+    tournee_genetique = algo_genetique(listeVillesCopie, 800, 50, 400)
+    
 
-    root.mainloop()
+    # root.mainloop()

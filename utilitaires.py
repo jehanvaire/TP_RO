@@ -20,6 +20,16 @@ def calculDistance(ville1, ville2):
     return  abs(r*math.acos((math.sin(y1)*math.sin(y2)) + (math.cos(y1)*math.cos(y2)*math.cos(x1-x2))))
 
 
+def d(ville1, ville2):
+
+    y1 = ville1.getY()
+    y2 = ville2.getY()
+    
+    x1 = ville1.getX()
+    x2 = ville2.getX()
+    
+    return  abs(r*math.acos((math.sin(y1)*math.sin(y2)) + (math.cos(y1)*math.cos(y2)*math.cos(x1-x2))))
+
 def tourAleatoire(listeVA):
     random.shuffle(listeVA)
     return listeVA
